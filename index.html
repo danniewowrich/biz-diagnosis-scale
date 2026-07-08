@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生意诊断（4+1）· Scale Prompt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .section h3 {
+            font-size: 1.3em;
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+        }
+        
+        .framework-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .framework-box .formula {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .power-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .power-card {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .power-card.primary {
+            border-left-color: #764ba2;
+        }
+        
+        .power-card h4 {
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .power-card.primary h4 {
+            color: #764ba2;
+        }
+        
+        .power-card p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .info-table th {
+            background: #f5f7fa;
+            color: #667eea;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .info-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-table tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .badge.primary {
+            background: #764ba2;
+        }
+        
+        .code-block {
+            background: #f5f7fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+        }
+        
+        .flow-chart {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .flow-item {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .flow-item.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .flow-arrow {
+            font-size: 1.5em;
+            color: #667eea;
+        }
+        
+        .priority-list {
+            list-style: none;
+        }
+        
+        .priority-list li {
+            padding: 15px;
+            border-left: 4px solid #ddd;
+            margin: 10px 0;
+            background: #f9f9f9;
+            border-radius: 6px;
+        }
+        
+        .priority-list li.p0 {
+            border-left-color: #ff6b6b;
+        }
+        
+        .priority-list li.p1 {
+            border-left-color: #ffa500;
+        }
+        
+        .priority-list li.p2 {
+            border-left-color: #4ecdc4;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .power-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>生意诊断（4+1）</h1>
+            <p>Scale Prompt · 可复制的 AI 诊断方法论</p>
+        </header>
+
+        <div class="framework-box">
+            <div style="font-size: 0.9em; opacity: 0.8;">核心公式</div>
+            <div class="formula">生意诊断（4+1） = 经营力 + 商品力 + 内容力 + 投放力 +（组织力）</div>
+            <div style="font-size: 0.9em; opacity: 0.8;">四力 + 一力，全面诊断生意全链路</div>
+        </div>
+
+        <div class="section">
+            <h2>一、四力定义</h2>
+            <div class="power-grid">
+                <div class="power-card">
+                    <h4>经营力</h4>
+                    <p><strong>核心问题：</strong>怎么卖？</p>
+                    <p><strong>关注维度：</strong>店铺体验、直播间效率、大场机制</p>
+                </div>
+                <div class="power-card">
+                    <h4>商品力</h4>
+                    <p><strong>核心问题：</strong>卖什么？</p>
+                    <p><strong>关注维度：</strong>货盘结构、爆品定义、背书资源</p>
+                </div>
+                <div class="power-card">
+                    <h4>内容力</h4>
+                    <p><strong>核心问题：</strong>怎么说？</p>
+                    <p><strong>关注维度：</strong>创作者矩阵、四步法、三级评估</p>
+                </div>
+                <div class="power-card">
+                    <h4>投放力</h4>
+                    <p><strong>核心问题：</strong>怎么获客？</p>
+                    <p><strong>关注维度：</strong>素材量、智投占比、版位结构</p>
+                </div>
+                <div class="power-card primary">
+                    <h4>组织力</h4>
+                    <p><strong>核心问题：</strong>谁来卖？</p>
+                    <p><strong>关注维度：</strong>矩阵分工、达人通道、用户分层</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>二、待提供（需要客户/销售提前准备）</h2>
+            
+            <h3>2.1 客户侧必须提供</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>待提供内容</th>
+                        <th>形态要求</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge">A1</span></td>
+                        <td>分产品线GMV</td>
+                        <td>Excel/表格</td>
+                        <td>按月，至少近6个月数据</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge">A2</span></td>
+                        <td>自营vs达人占比</td>
+                        <td>数字/截图</td>
+                        <td>自营销售额、达人销售额、占比</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge">A3</span></td>
+                        <td>视频号/服务号/小程序/小店账号清单</td>
+                        <td>截图清单</td>
+                        <td>每个账号的ID、粉丝量、定位</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge">A4</span></td>
+                        <td>直播间账号+截图</td>
+                        <td>截图</td>
+                        <td>直播间名称、场次、场均GMV</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge">A5</span></td>
+                        <td>代言人/背书资源清单</td>
+                        <td>素材包/截图</td>
+                        <td>明星代言、营养师合作、检测报告</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge">A6</span></td>
+                        <td>投放勤奋度诊断报告</td>
+                        <td>PDF/截图</td>
+                        <td>巨量百应/腾讯广告诊断报告</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.2 我方侧补充获取</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>待提供内容</th>
+                        <th>形态要求</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge">B1</span></td>
+                        <td>友望数据导出</td>
+                        <td>Excel</td>
+                        <td>行业榜单+竞品画像</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge">B2</span></td>
+                        <td>竞品5维度数据</td>
+                        <td>Excel</td>
+                        <td>商品/视频/直播/达人/店铺</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge">B3</span></td>
+                        <td>方法论素材库</td>
+                        <td>PDF/PPT</td>
+                        <td>平台规则/行业白皮书/案例</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>三、待输入（AI 需要读取并分析的内容）</h2>
+            
+            <div class="code-block">【客户资料】
+├── A1_销售数据.xlsx
+│   └── 包含：分产品线GMV、分月GMV、同比环比
+├── A2_渠道结构.xlsx
+│   └── 包含：自营vs达人、占比变化
+├── A3_账号清单.xlsx
+│   └── 包含：视频号/服务号/小程序/小店ID、粉丝量
+├── A4_直播间数据.xlsx
+│   └── 包含：直播间名称、场次、场均GMV
+├── A5_背书资源.xlsx
+│   └── 包含：代言人、KOL、检测报告清单
+├── A6_投放诊断.xlsx
+│   └── 包含：素材量、智投占比、版位结构
+
+【竞品数据】
+├── B1_友望导出.xlsx
+│   └── 包含：行业榜单、竞品销售额、销量
+├── B2_竞品画像.xlsx
+│   └── 包含：商品/视频/直播/达人/店铺5维度
+
+【方法论素材】
+└── B3_方法论库/
+    ├── 平台规则.pdf
+    ├── 行业白皮书.pdf
+    └── 案例库.pptx</div>
+
+            <h3>3.1 输入格式要求</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>数据类型</th>
+                        <th>推荐格式</th>
+                        <th>必填字段</th>
+                        <th>可选字段</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>销售数据</td>
+                        <td>Excel</td>
+                        <td>产品线、月份、GMV</td>
+                        <td>同比、环比</td>
+                    </tr>
+                    <tr>
+                        <td>账号清单</td>
+                        <td>Excel/CSV</td>
+                        <td>账号ID、类型</td>
+                        <td>粉丝量、定位</td>
+                    </tr>
+                    <tr>
+                        <td>竞品数据</td>
+                        <td>Excel</td>
+                        <td>竞品名称、GMV</td>
+                        <td>创作者数、视频数</td>
+                    </tr>
+                    <tr>
+                        <td>投放数据</td>
+                        <td>PDF/截图</td>
+                        <td>素材量、智投占比</td>
+                        <td>版位结构、消耗</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>四、待输出（AI 生成的诊断报告结构）</h2>
+            
+            <h3>4.1 输出文件清单</h3>
+            <div class="flow-chart">
+                <div class="flow-item active">00_全局快照</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">01_经营力诊断</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">02_商品力诊断</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">03_内容力诊断</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">04_投放力诊断</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item primary">05_组织力诊断</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">06_行动计划</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">07_总结</div>
+            </div>
+
+            <h3>4.2 全局快照结构</h3>
+            <div class="code-block"># [品牌名] · [时间周期] 生意诊断报告
+
+## 一句话判势
+[核心判断，如：节奏健康，但效率不足，最大短板是内容力]
+
+## 数据速览
+| 指标 | 数值 | 判定 |
+|------|------|------|
+| H1 GMV | [待输入] | [节奏健康/不健康] |
+| 自营vs达人 | [待输入] | [自营为主/达人为主] |
+| 竞品GMV | [待输入] | [领先/落后] |
+| 内容创作者数 | [待输入] | [领先/落后竞品X倍] |
+
+## 北极星目标
+**H2 GMV 目标：[待输入]万**</div>
+
+            <h3>4.3 各力诊断输出结构</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>章节</th>
+                        <th>核心内容</th>
+                        <th>关键输出</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>一、经营力</td>
+                        <td>店铺体验、直播间效率、大场机制</td>
+                        <td>5项装修自查、场均GMV对比、大场建议</td>
+                    </tr>
+                    <tr>
+                        <td>二、商品力</td>
+                        <td>人货场匹配、爆品定义、货盘金字塔、五张背书牌</td>
+                        <td>爆品识别、货盘结构、背书资源盘点</td>
+                    </tr>
+                    <tr>
+                        <td>三、内容力</td>
+                        <td>四步法（打卖点→匹配背书→怎么用→评估）</td>
+                        <td>L1勤奋度/L2种草力/L3转化力三级评估</td>
+                    </tr>
+                    <tr>
+                        <td>四、投放力</td>
+                        <td>勤奋度三指标、三阶段优化</td>
+                        <td>素材量/智投占比/版位结构诊断</td>
+                    </tr>
+                    <tr>
+                        <td>五、组织力</td>
+                        <td>矩阵"三定"、达人通道、用户价值分层</td>
+                        <td>分工建议、达人策略、用户运营</td>
+                    </tr>
+                    <tr>
+                        <td>六、行动计划</td>
+                        <td>分月计划、优先级排序</td>
+                        <td>P0/P1/P2任务清单</td>
+                    </tr>
+                    <tr>
+                        <td>七、总结</td>
+                        <td>三句话总结</td>
+                        <td>核心问题+关键任务+预期目标</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>五、使用流程</h2>
+            
+            <div class="code-block">【Step 1】准备输入文件
+按照"待提供"清单，收集客户资料和竞品数据
+整理成 Excel/PDF 文件，存放在指定目录
+
+【Step 2】调用 AI 生成诊断
+请基于以下输入文件，按照"待输出"的结构，生成一份生意诊断报告：
+
+输入文件路径：
+- /path/to/A1_销售数据.xlsx
+- /path/to/A2_渠道结构.xlsx
+- /path/to/B1_友望导出.xlsx
+- ...
+
+输出要求：
+- 按照"待输出"的7个章节结构
+- 每个章节包含：数据对比 + 问题诊断 + 优化建议
+- 标注P0/P1/P2优先级
+
+【Step 3】AI 自动生成报告
+- AI 读取输入文件
+- 按照输出结构生成诊断报告
+- 自动填充"待输入"占位符</div>
+
+            <h3>5.1 输入输出映射</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>输入</th>
+                        <th>对应输出章节</th>
+                        <th>关键指标</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A1销售数据</td>
+                        <td>全局快照、商品力</td>
+                        <td>GMV、产品线占比</td>
+                    </tr>
+                    <tr>
+                        <td>A2渠道结构</td>
+                        <td>组织力</td>
+                        <td>自营vs达人</td>
+                    </tr>
+                    <tr>
+                        <td>A3账号清单</td>
+                        <td>组织力</td>
+                        <td>矩阵账号数</td>
+                    </tr>
+                    <tr>
+                        <td>A4直播间数据</td>
+                        <td>经营力</td>
+                        <td>场均GMV</td>
+                    </tr>
+                    <tr>
+                        <td>A5背书资源</td>
+                        <td>商品力</td>
+                        <td>爆品、背书牌</td>
+                    </tr>
+                    <tr>
+                        <td>A6投放诊断</td>
+                        <td>投放力</td>
+                        <td>素材量、智投占比</td>
+                    </tr>
+                    <tr>
+                        <td>B1友望导出</td>
+                        <td>内容力</td>
+                        <td>创作者数、转发量</td>
+                    </tr>
+                    <tr>
+                        <td>B2竞品画像</td>
+                        <td>全章节</td>
+                        <td>竞品对比基准</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>六、核心方法论速记</h2>
+            
+            <h3>6.1 四力一句话</h3>
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>力</th>
+                        <th>一句话</th>
+                        <th>核心指标</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>经营力</td>
+                        <td>怎么卖</td>
+                        <td>店铺体验、直播间效率</td>
+                    </tr>
+                    <tr>
+                        <td>商品力</td>
+                        <td>卖什么</td>
+                        <td>货盘结构、爆品占比</td>
+                    </tr>
+                    <tr>
+                        <td>内容力</td>
+                        <td>怎么说</td>
+                        <td>创作者数、转发量</td>
+                    </tr>
+                    <tr>
+                        <td>投放力</td>
+                        <td>怎么获客</td>
+                        <td>素材量、智投占比</td>
+                    </tr>
+                    <tr>
+                        <td>组织力</td>
+                        <td>谁来卖</td>
+                        <td>矩阵分工、达人通道</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>6.2 三个公式</h3>
+            <div class="code-block">1. 广告收入 = GMV × Take Rate
+2. 内容规模 = 创作者数 × 更新频率 × 互动量
+3. 直播效率 = 单场GMV ÷ 场次</div>
+
+            <h3>6.3 优先级判断</h3>
+            <ul class="priority-list">
+                <li class="p0">
+                    <strong>P0（立刻做）：</strong>最大短板，30天内可落地
+                </li>
+                <li class="p1">
+                    <strong>P1（3个月）：</strong>次要短板，需要资源积累
+                </li>
+                <li class="p2">
+                    <strong>P2（持续优化）：</strong>长期优化项
+                </li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>生意诊断（4+1）· Scale Prompt | 可复制的 AI 诊断方法论</p>
+            <p>© 2026 腾讯营销团队</p>
+        </footer>
+    </div>
+</body>
+</html>
