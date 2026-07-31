@@ -1,688 +1,442 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生意诊断（4+1）· Scale Prompt</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-        
-        .section {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .section h2 {
-            font-size: 1.8em;
-            color: #667eea;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
-        }
-        
-        .section h3 {
-            font-size: 1.3em;
-            color: #764ba2;
-            margin: 20px 0 10px 0;
-        }
-        
-        .framework-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .framework-box .formula {
-            font-size: 2em;
-            font-weight: 700;
-            margin: 20px 0;
-        }
-        
-        .power-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .power-card {
-            background: white;
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .power-card.primary {
-            border-left-color: #764ba2;
-        }
-        
-        .power-card h4 {
-            color: #667eea;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-        
-        .power-card.primary h4 {
-            color: #764ba2;
-        }
-        
-        .power-card p {
-            color: #666;
-            font-size: 0.95em;
-        }
-        
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        .info-table th {
-            background: #f5f7fa;
-            color: #667eea;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-        }
-        
-        .info-table td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .info-table tr:hover {
-            background: #f9f9f9;
-        }
-        
-        .badge {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-        
-        .badge.primary {
-            background: #764ba2;
-        }
-        
-        .code-block {
-            background: #f5f7fa;
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            white-space: pre-wrap;
-            overflow-x: auto;
-        }
-        
-        .prompt-box {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 30px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .prompt-box h3 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.4em;
-        }
-        
-        .prompt-box .copy-btn {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
-        
-        .prompt-box .copy-btn:hover {
-            background: #764ba2;
-        }
-        
-        .flow-chart {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            padding: 20px;
-            background: #f5f7fa;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        .flow-item {
-            background: white;
-            padding: 15px 25px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
-        .flow-item.active {
-            background: #667eea;
-            color: white;
-        }
-        
-        .flow-item.primary {
-            background: #764ba2;
-            color: white;
-        }
-        
-        .flow-arrow {
-            font-size: 1.5em;
-            color: #667eea;
-        }
-        
-        .output-list {
-            list-style: none;
-        }
-        
-        .output-list li {
-            padding: 15px;
-            border-left: 4px solid #667eea;
-            margin: 10px 0;
-            background: #f9f9f9;
-            border-radius: 6px;
-        }
-        
-        .output-list li.primary {
-            border-left-color: #764ba2;
-        }
-        
-        .output-list li.highlight {
-            border-left-color: #ff6b6b;
-            background: #fff5f5;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: #999;
-        }
-        
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8em;
-            }
-            
-            .power-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>生意诊断（4+1）· Scale Prompt · 可复制的 AI 诊断方法论</title>
+<style>
+  :root{
+    --bg:#0d1b2a; --bg2:#132a43; --card:#ffffff; --ink:#1b2733; --muted:#5b6b7b;
+    --brand:#1f6feb; --brand2:#2e9bff; --line:#e3e9f0; --alt:#f2f7fd;
+    --new:#e8f7ee; --new-b:#1a9d5a; --tag:#fff3e0; --tag-b:#c47a12;
+    --p0:#c0392b; --p1:#bf8f00; --p2:#2d7d34;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"PingFang SC","Microsoft YaHei",-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:#eef3f8;line-height:1.65;}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  /* Hero */
+  header.hero{background:linear-gradient(135deg,var(--bg),var(--bg2));color:#fff;padding:64px 0 54px;position:relative;overflow:hidden}
+  header.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;
+    background:radial-gradient(circle,rgba(46,155,255,.35),transparent 60%)}
+  .hero h1{font-size:34px;margin:0 0 10px;font-weight:800;letter-spacing:.5px}
+  .hero .formula{font-size:20px;font-weight:700;margin:18px 0 8px;color:#cfe6ff}
+  .hero .formula b{color:#fff}
+  .hero p.sub{color:#b9c9da;margin:6px 0 0;font-size:15px}
+  .hero .meta{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+  .hero .meta span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+    padding:5px 12px;border-radius:20px;font-size:13px;color:#e8f1fb}
+
+  /* Nav */
+  nav.toc{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(13,27,42,.05)}
+  nav.toc .wrap{display:flex;gap:6px;flex-wrap:wrap;padding:10px 20px}
+  nav.toc a{font-size:13.5px;color:var(--muted);padding:6px 12px;border-radius:8px;font-weight:600}
+  nav.toc a:hover{background:var(--alt);color:var(--brand)}
+
+  section{padding:40px 0 8px}
+  h2.sec{font-size:24px;font-weight:800;margin:0 0 6px;color:var(--ink);display:flex;align-items:center;gap:10px}
+  h2.sec .no{background:var(--brand);color:#fff;font-size:14px;width:30px;height:30px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+  .sec-desc{color:var(--muted);margin:2px 0 22px;font-size:14.5px}
+
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  @media(max-width:900px){.grid5{grid-template-columns:repeat(2,1fr)}}
+  .force{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;
+    box-shadow:0 4px 16px rgba(13,27,42,.05);transition:.2s}
+  .force:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(31,111,235,.14)}
+  .force .fname{font-weight:800;font-size:16px;color:var(--brand);display:flex;align-items:center;gap:6px}
+  .force .fq{color:var(--muted);font-size:13px;margin:4px 0 10px}
+  .force ul{margin:0;padding-left:16px;font-size:13.5px;color:var(--ink)}
+  .force ul li{margin:4px 0}
+  .plus{color:#8a6d3b}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 4px;box-shadow:0 4px 16px rgba(13,27,42,.05);overflow:hidden}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  thead th{background:#1f4e79;color:#fff;text-align:left;padding:10px 12px;font-weight:700;font-size:13px}
+  tbody td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+  tbody tr:nth-child(even){background:var(--alt)}
+  .tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:20px;white-space:nowrap}
+  .tag.new{background:var(--new);color:var(--new-b);border:1px solid #bfe6cf}
+  .tag.l1{background:#eef4ff;color:#2456c7;border:1px solid #cddcff}
+  .tag.l2{background:#fff4e6;color:#b3630f;border:1px solid #ffd9a8}
+  .tag.l3{background:#f3ecff;color:#6f39c9;border:1px solid #dcccf7}
+  .tag.eval{background:#f0f0f0;color:#555;border:1px solid #ddd}
+  .tag.p0{background:#fdecea;color:var(--p0);border:1px solid #f5c6c0}
+  .tag.p1{background:#fff6da;color:var(--p1);border:1px solid #f0e0a6}
+  .tag.p2{background:#e9f6ea;color:var(--p2);border:1px solid #bfe3c2}
+  tr.newrow td:first-child{border-left:3px solid var(--new-b)}
+
+  .callout{background:linear-gradient(135deg,#f0f8ff,#eaf2fe);border:1px solid #cfe1fa;border-radius:14px;padding:18px 20px;margin:14px 0}
+  .callout h4{margin:0 0 8px;font-size:15px;color:var(--brand)}
+  .callout ul{margin:6px 0 0;padding-left:18px;font-size:14px;color:var(--ink)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0 2px;font-size:12.5px;color:var(--muted);align-items:center}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+
+  /* prompt block */
+  .promptbox{position:relative;background:#0f1c2e;border-radius:14px;padding:20px;color:#d6e2f0;font-size:13px;
+    font-family:"SF Mono",Consolas,Menlo,monospace;white-space:pre-wrap;line-height:1.7;overflow:auto;max-height:520px}
+  .copybtn{position:absolute;top:12px;right:12px;background:var(--brand);color:#fff;border:0;border-radius:8px;
+    padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer}
+  .copybtn:hover{background:#1558c0}
+  .copybtn.done{background:var(--new-b)}
+
+  footer{background:#0d1b2a;color:#93a6ba;padding:30px 0;margin-top:46px;font-size:13px;text-align:center}
+  .updbar{background:#fff8e6;border:1px solid #f0e0a6;border-radius:12px;padding:12px 16px;margin:18px 0 6px;font-size:13.5px;color:#7a5c00}
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>生意诊断（4+1）</h1>
-            <p>Scale Prompt · 可复制的 AI 诊断方法论</p>
-        </header>
 
-        <div class="framework-box">
-            <div style="font-size: 0.9em; opacity: 0.8;">核心公式</div>
-            <div class="formula">生意诊断（4+1） = 经营力 + 商品力 + 内容力 + 投放力 +（组织力）</div>
-            <div style="font-size: 0.9em; opacity: 0.8;">四力 + 一力，全面诊断生意全链路</div>
-        </div>
-
-        <div class="section">
-            <h2>一、四力定义</h2>
-            <div class="power-grid">
-                <div class="power-card">
-                    <h4>经营力</h4>
-                    <p><strong>核心问题：</strong>怎么卖？</p>
-                    <p><strong>关注维度：</strong>店铺体验、直播间效率、大场机制</p>
-                </div>
-                <div class="power-card">
-                    <h4>商品力</h4>
-                    <p><strong>核心问题：</strong>卖什么？</p>
-                    <p><strong>关注维度：</strong>货盘结构、爆品定义、背书资源</p>
-                </div>
-                <div class="power-card">
-                    <h4>内容力</h4>
-                    <p><strong>核心问题：</strong>怎么说？</p>
-                    <p><strong>关注维度：</strong>创作者矩阵、四步法、三级评估</p>
-                </div>
-                <div class="power-card">
-                    <h4>投放力</h4>
-                    <p><strong>核心问题：</strong>怎么获客？</p>
-                    <p><strong>关注维度：</strong>素材量、智投占比、版位结构</p>
-                </div>
-                <div class="power-card primary">
-                    <h4>组织力</h4>
-                    <p><strong>核心问题：</strong>谁来卖？</p>
-                    <p><strong>关注维度：</strong>矩阵分工、达人通道、用户分层</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>二、待提供（需要客户/销售提前准备）</h2>
-            
-            <h3>2.1 客户侧必须提供</h3>
-            <table class="info-table">
-                <thead>
-                    <tr>
-                        <th>编号</th>
-                        <th>待提供内容</th>
-                        <th>形态要求</th>
-                        <th>说明</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="badge">A1</span></td>
-                        <td>复盘周期的品牌维度生意数据</td>
-                        <td>Excel/表格</td>
-                        <td>包含分日、分月、总数据，以及场域生意占比（如自播、达播、短视频、私域等）</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">A2</span></td>
-                        <td>客户在竞媒的经营数据</td>
-                        <td>Excel/截图</td>
-                        <td>包含分产品线、分时段以及分场域的经营数据</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">A3</span></td>
-                        <td>客户微信资产账号清单</td>
-                        <td>截图清单</td>
-                        <td>包含视频号、服务号、小程序、小店</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">A4</span></td>
-                        <td>直播间的所有账号及截图</td>
-                        <td>截图</td>
-                        <td>所有直播间账号、场次、场均GMV</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">A5</span></td>
-                        <td>店铺的所有账号及截图</td>
-                        <td>截图</td>
-                        <td>所有店铺账号、商品陈列、转化数据</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">A6</span></td>
-                        <td>品牌背景介绍及行业报告</td>
-                        <td>PDF/文档/截图</td>
-                        <td>品牌方、品牌或集团介绍，以及类目行业权威的研究报告</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">A7</span></td>
-                        <td>客户广告投放诊断和勤奋度报告</td>
-                        <td>PDF/截图/Excel</td>
-                        <td>腾讯广告诊断报告或勤奋度分析</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>2.2 我方侧补充获取</h3>
-            <table class="info-table">
-                <thead>
-                    <tr>
-                        <th>编号</th>
-                        <th>待提供内容</th>
-                        <th>形态要求</th>
-                        <th>说明</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="badge">B1</span></td>
-                        <td>友望搜竞品品牌5维度详情数据</td>
-                        <td>Excel/截图</td>
-                        <td>友望数据导出：商品/视频/直播/达人/店铺5维度</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">B2</span></td>
-                        <td>友望行业类目销售数据</td>
-                        <td>Excel/截图</td>
-                        <td>友望数据导出：行业类目销售数据</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge">B3</span></td>
-                        <td>方法论素材库</td>
-                        <td>PDF/PPT/文档</td>
-                        <td>可参考经营组相关经营方法论，或对应行业研究报告、内部研究报告、优秀案例等</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section">
-            <h2>三、待输入（AI 需要读取并分析的内容）</h2>
-            
-            <div class="code-block">【客户资料】
-├── A1_品牌生意数据.xlsx
-│   └── 包含：分日/分月/总数据，场域生意占比（自播、达播、短视频、私域等）
-├── A2_竞媒经营数据.xlsx
-│   └── 包含：分产品线、分时段、分场域的经营数据
-├── A3_微信资产账号清单.xlsx
-│   └── 包含：视频号、服务号、小程序、小店账号ID、粉丝量
-├── A4_直播间账号截图/
-│   └── 包含：所有直播间账号、场次、场均GMV截图
-├── A5_店铺账号截图/
-│   └── 包含：所有店铺账号、商品陈列、转化数据截图
-├── A6_品牌行业报告.pdf
-│   └── 包含：品牌方/集团介绍、类目行业权威研究报告
-└── A7_投放诊断报告.xlsx
-    └── 包含：腾讯广告投放诊断、勤奋度分析
-
-【竞品数据】
-├── B1_友望竞品数据.xlsx
-│   └── 包含：友望搜竞品品牌5维度详情数据（商品/视频/直播/达人/店铺）
-└── B2_友望行业类目销售数据.xlsx
-    └── 包含：友望行业类目销售数据导出
-
-【方法论素材】
-└── B3_方法论库/
-    ├── 经营组方法论.pdf
-    ├── 行业研究报告.pdf
-    ├── 内部研究报告.pdf
-    └── 优秀案例库.pptx</div>
-
-            <h3>3.1 输入格式要求</h3>
-            <table class="info-table">
-                <thead>
-                    <tr>
-                        <th>数据类型</th>
-                        <th>推荐格式</th>
-                        <th>必填字段</th>
-                        <th>可选字段</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>品牌生意数据</td>
-                        <td>Excel</td>
-                        <td>日期、GMV、场域类型、占比</td>
-                        <td>同比、环比</td>
-                    </tr>
-                    <tr>
-                        <td>竞媒经营数据</td>
-                        <td>Excel/截图</td>
-                        <td>平台、产品线、时间段、GMV</td>
-                        <td>销量、客单价</td>
-                    </tr>
-                    <tr>
-                        <td>微信资产清单</td>
-                        <td>Excel/CSV</td>
-                        <td>账号类型、账号ID</td>
-                        <td>粉丝量、定位</td>
-                    </tr>
-                    <tr>
-                        <td>直播间/店铺截图</td>
-                        <td>截图文件夹</td>
-                        <td>账号名称、截图</td>
-                        <td>场次、GMV</td>
-                    </tr>
-                    <tr>
-                        <td>品牌行业报告</td>
-                        <td>PDF/文档/截图</td>
-                        <td>报告核心内容</td>
-                        <td>数据支撑、案例</td>
-                    </tr>
-                    <tr>
-                        <td>投放诊断报告</td>
-                        <td>Excel/本地文件</td>
-                        <td>素材量、智投占比</td>
-                        <td>版位结构、消耗</td>
-                    </tr>
-                    <tr>
-                        <td>友望/有米数据</td>
-                        <td>Excel/截图</td>
-                        <td>竞品名称、GMV</td>
-                        <td>创作者数、视频数</td>
-                    </tr>
-                    <tr>
-                        <td>方法论素材</td>
-                        <td>PDF/PPT/文档</td>
-                        <td>方法论核心观点</td>
-                        <td>案例、数据</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section">
-            <h2>四、待输出（AI 生成的诊断报告结构）</h2>
-            
-            <h3>4.1 输出文件清单</h3>
-            <ul class="output-list">
-                <li class="primary">
-                    <strong>00_全局快照</strong>：一句话判势 + 数据速览 + 北极星目标
-                </li>
-                <li class="highlight">
-                    <strong>01_商品力诊断</strong>：人货场匹配、爆品定义、货盘金字塔、五张背书牌
-                </li>
-                <li class="highlight">
-                    <strong>02_内容力诊断</strong>：四步法（打卖点→匹配背书→怎么用→评估）+ 三级评估指标
-                </li>
-                <li class="highlight">
-                    <strong>03_经营力诊断</strong>：店铺体验、直播间效率、大场机制
-                </li>
-                <li class="highlight">
-                    <strong>04_组织力诊断</strong>：矩阵"三定"、达人通道、用户价值分层
-                </li>
-                <li class="highlight">
-                    <strong>05_投放力诊断</strong>：勤奋度三指标、三阶段优化
-                </li>
-                <li>
-                    <strong>06_行动计划总结</strong>：按"月 + 五力"逐月输出 Todo（7-12月），每月拆组织力/商品力/内容力/经营力/投放力，含 P0/P1/P2 优先级与 H2 累计 GMV 目标
-                </li>
-            </ul>
-
-            <h3>4.2 输出结构详情</h3>
-            <table class="info-table">
-                <thead>
-                    <tr>
-                        <th>章节</th>
-                        <th>核心内容</th>
-                        <th>关键输出</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>一、商品力</td>
-                        <td>人货场匹配、爆品定义、货盘金字塔、五张背书牌</td>
-                        <td>爆品识别、货盘结构、背书资源盘点、选品建议</td>
-                    </tr>
-                    <tr>
-                        <td>二、内容力</td>
-                        <td>四步法（打卖点→匹配背书→怎么用→评估）</td>
-                        <td>L1勤奋度/L2种草力/L3转化力三级评估、创作者矩阵建议</td>
-                    </tr>
-                    <tr>
-                        <td>三、经营力</td>
-                        <td>店铺体验、直播间效率、大场机制</td>
-                        <td>5项装修自查、场均GMV对比、大场建议</td>
-                    </tr>
-                    <tr>
-                        <td>四、组织力</td>
-                        <td>矩阵"三定"、达人通道、用户价值分层</td>
-                        <td>分工建议、达人策略、用户运营方案</td>
-                    </tr>
-                    <tr>
-                        <td>五、投放力</td>
-                        <td>勤奋度三指标、三阶段优化</td>
-                        <td>素材量/智投占比/版位结构诊断、优化路径</td>
-                    </tr>
-                    <tr>
-                        <td>六、行动计划总结</td>
-                        <td>按"月 + 五力"输出 Todo（7-12月逐月，每月拆组织/商品/内容/经营/投放）</td>
-                        <td>P0/P1/P2任务清单、H2累计GMV目标、预期目标、追踪机制</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>4.3 一键复制 Prompt</h3>
-            <div class="prompt-box">
-                <h3>📋 生意诊断（4+1）AI 任务 Prompt</h3>
-                <div class="code-block" id="prompt-content">请基于以下输入文件，按照"生意诊断（4+1）"方法论，生成一份完整的生意诊断报告。
-
-【核心公式】
-生意诊断（4+1） = 经营力 + 商品力 + 内容力 + 投放力 +（组织力）
-
-【输入文件路径】
-客户资料：
-- /path/to/A1_品牌生意数据.xlsx（分日/分月/总数据，场域生意占比：自播、达播、短视频、私域等）
-- /path/to/A2_竞媒经营数据.xlsx（分产品线、分时段、分场域的经营数据）
-- /path/to/A3_微信资产账号清单.xlsx（视频号、服务号、小程序、小店）
-- /path/to/A4_直播间账号截图/（所有直播间账号及截图）
-- /path/to/A5_店铺账号截图/（所有店铺账号及截图）
-- /path/to/A6_品牌行业报告.pdf（品牌方/集团介绍、类目行业权威研究报告）
-- /path/to/A7_投放诊断报告.xlsx（腾讯广告投放诊断/勤奋度分析）
-
-竞品数据：
-- /path/to/B1_友望竞品数据.xlsx（友望搜竞品品牌5维度详情数据）
-- /path/to/B2_友望行业类目销售数据.xlsx（友望行业类目销售数据导出）
-
-方法论素材：
-- /path/to/B3_方法论库/（经营组方法论、行业研究报告、优秀案例等）
-
-【输出要求】
-请按照以下6个章节结构输出诊断报告：
-
-1. **全局快照**
-   - 一句话判势（核心判断）
-   - 数据速览（GMV、场域结构、竞品对比、内容规模）
-   - 北极星目标（H2 GMV目标）
-
-2. **商品力诊断**
-   - 人货场匹配分析
-   - 爆品定义（SKU贡献占比）
-   - 货盘金字塔结构
-   - 五张背书牌梳理
-   - 选品建议
-
-3. **内容力诊断**
-   - 四步法：打卖点→匹配背书→怎么用→评估
-   - 三级评估指标：L1勤奋度/L2种草力/L3转化力
-   - 与竞品对比（创作者数、转发量差距）
-   - 创作者矩阵建议
-
-4. **经营力诊断**
-   - 店铺体验5项自查
-   - 直播间效率分析（场均GMV对比）
-   - 大场机制建议（3类9型）
-
-5. **组织力诊断**
-   - 矩阵"三定"（定分工/定流量/定评估）
-   - 达人通道分析
-   - 用户价值分层
-
-6. **投放力诊断**
-   - 勤奋度三指标：素材量、智投占比、版位结构
-   - 三阶段优化路径
-
-7. **行动计划总结（按"月 + 五力"输出 Todo）**
-   - 请按 7月 → 12月 逐月输出，每个月内再按五力（组织力 / 商品力 / 内容力 / 经营力 / 投放力）拆分可执行 Todo。
-   - 每月 Todo 输出格式（每个力下用 ①②③ 编号列出动作）：
-     【7月 · 月GMV目标XX万 · 大场：XXX】
-     · 组织力：①… ②…
-     · 商品力：①…
-     · 内容力：①… ②…
-     · 经营力：①… ②…
-     · 投放力：①…
-   - 逐月输出 7、8、9、10、11、12 月（11月标注为决战月，重点放大）。
-   - 逐月输出完成后，汇总：
-     · H2 累计 GMV 目标（≥ XXX 万）
-     · 优先级排序：
-       - P0（立刻做）：最大短板，30天内可落地
-       - P1（3个月）：次要短板，需要资源积累
-       - P2（持续优化）：长期优化项
-   - 预期目标
-
-【方法论要点】
-- 商品力：卖什么（货盘结构、爆品占比）
-- 内容力：怎么说（创作者数、转发量）
-- 经营力：怎么卖（店铺体验、直播间效率）
-- 组织力：谁来卖（矩阵分工、达人通道）
-- 投放力：怎么获客（素材量、智投占比）
-
-请确保：
-1. 每个章节包含：数据对比 + 问题诊断 + 优化建议
-2. 标注P0/P1/P2优先级
-3. 结论要具体、可执行、可追踪
-
-【开始执行诊断】</div>
-                <button class="copy-btn" onclick="copyPrompt()">📋 复制 Prompt</button>
-            </div>
-        </div>
-
-        <script>
-            function copyPrompt() {
-                const promptContent = document.getElementById('prompt-content').textContent;
-                navigator.clipboard.writeText(promptContent).then(() => {
-                    const btn = document.querySelector('.copy-btn');
-                    btn.textContent = '✅ 已复制！';
-                    setTimeout(() => {
-                        btn.textContent = '📋 复制 Prompt';
-                    }, 2000);
-                });
-            }
-        </script>
-
-        <footer>
-            <p>生意诊断（4+1）· Scale Prompt | 可复制的 AI 诊断方法论</p>
-            <p>© 2026 腾讯营销团队</p>
-        </footer>
+<header class="hero">
+  <div class="wrap">
+    <h1>生意诊断（4+1）· Scale Prompt</h1>
+    <p class="sub">可复制的 AI 诊断方法论 · 视频号版（已按四力诊断 PRD 修订整合数据字段）</p>
+    <div class="formula">生意诊断 = <b>经营力</b> + <b>商品力</b> + <b>内容力</b> + <b>投放力</b> +（<b>组织力</b>）</div>
+    <div class="meta">
+      <span>版本 v1.1 · 已整合修订新增字段</span>
+      <span>数据分层：L1 直采 / L2 衍生 / L3 补录</span>
+      <span>更新：2026-07-31</span>
     </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#forces">五力总览</a>
+    <a href="#layer">数据分层规范</a>
+    <a href="#fields">四域字段清单</a>
+    <a href="#user">用户资产维度</a>
+    <a href="#input">输入格式要求</a>
+    <a href="#output">输出报告结构</a>
+    <a href="#priority">字段优先级</a>
+    <a href="#prompt">一键复制 Prompt</a>
+  </div>
+</nav>
+
+<div class="updbar wrap" style="margin-left:auto;margin-right:auto;max-width:1080px">
+  <b>本次修订整合说明：</b>本页在原 4+1 Scale Prompt 基础上，按《四力生意诊断 PRD 第四点第五点修订说明》补入了
+  <b>用户/人群资产维度、全域新老客拆分、直播转化漏斗、单品新客率、投放拉新指标、内容归因、微信豆字段</b>等。
+  所有新增字段均标注 <span class="tag new">新增</span> 徽标，便于对照原版。
+</div>
+
+<!-- 五力总览 -->
+<section id="forces">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">1</span>五力总览</h2>
+    <p class="sec-desc">四力 + 一力，全面诊断生意全链路。括号内为本次新增的诊断维度。</p>
+    <div class="grid5">
+      <div class="force">
+        <div class="fname">经营力</div>
+        <div class="fq">怎么卖？</div>
+        <ul>
+          <li>店铺体验</li>
+          <li>直播间效率</li>
+          <li>大场机制</li>
+          <li class="plus">＋ 直播转化漏斗 <span class="tag new">新</span></li>
+          <li class="plus">＋ 场域新客率 <span class="tag new">新</span></li>
+        </ul>
+      </div>
+      <div class="force">
+        <div class="fname">商品力</div>
+        <div class="fq">卖什么？</div>
+        <ul>
+          <li>货盘结构</li>
+          <li>爆品定义</li>
+          <li>背书资源</li>
+          <li class="plus">＋ 单品新客率 <span class="tag new">新</span></li>
+          <li class="plus">＋ 行业类目对标 <span class="tag new">新</span></li>
+        </ul>
+      </div>
+      <div class="force">
+        <div class="fname">内容力</div>
+        <div class="fq">怎么说？</div>
+        <ul>
+          <li>创作者矩阵</li>
+          <li>四步法</li>
+          <li>三级评估</li>
+          <li class="plus">＋ 硬广/原生区分 <span class="tag new">新</span></li>
+          <li class="plus">＋ 内容→SKU 归因 <span class="tag new">新</span></li>
+        </ul>
+      </div>
+      <div class="force">
+        <div class="fname">投放力</div>
+        <div class="fq">怎么获客？</div>
+        <ul>
+          <li>素材量</li>
+          <li>智投占比</li>
+          <li>版位结构</li>
+          <li class="plus">＋ 拉新 ROI/新客成本 <span class="tag new">新</span></li>
+          <li class="plus">＋ 微信豆数据 <span class="tag new">新</span></li>
+        </ul>
+      </div>
+      <div class="force">
+        <div class="fname">组织力 <span style="font-size:12px;color:#8a6d3b">(+1)</span></div>
+        <div class="fq">谁来卖？</div>
+        <ul>
+          <li>矩阵分工</li>
+          <li>达人通道</li>
+          <li>用户分层</li>
+          <li class="plus">＋ 人群资产(5A/八大) <span class="tag new">新</span></li>
+          <li class="plus">＋ 复购/新老客 <span class="tag new">新</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 数据分层规范 -->
+<section id="layer">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">2</span>数据分层规范（L1 / L2 / L3）</h2>
+    <p class="sec-desc">对应 PRD 第四点。本次新增三项分层治理要求（元信息标记 / L3 有效期 / L2 阈值版本），保障跨周期口径一致。</p>
+    <div class="card">
+      <table>
+        <thead><tr><th style="width:90px">层级</th><th style="width:230px">定义</th><th>示例字段</th><th style="width:150px">加工方</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag l1">L1 原始</span></td><td>经营号直采，不做业务判断</td><td>SKU 价格/销量/GMV、场次 GMV、投放消耗/ROI、支付用户数、新客数、老客数</td><td>经营号</td></tr>
+          <tr><td><span class="tag l2">L2 衍生</span></td><td>基于 L1 做规则化计算，参数可配置</td><td>货盘结构分类、大场判定、新客率、复购率、复购间隔、智投占比</td><td>经营号（参数 Skill 下发）</td></tr>
+          <tr><td><span class="tag l3">L3 补录</span></td><td>机器拿不到的主观/文本/外部/历史数据</td><td>产品线映射、背书文案、装修自查、同比历史、竞品数据、微信豆数据</td><td>客户/销售填录</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <h4>新增分层治理要求 <span class="tag new">新增</span></h4>
+      <ul>
+        <li><b>字段级数据来源标记：</b>每个字段附带来源标记（<code>direct 直采 / backfill 补录 / missing 缺失</code>），Skill 据此决定做完整诊断还是降级为定性描述，避免缺失被隐藏。</li>
+        <li><b>L3 数据有效期：</b>同比历史、竞品、装修自查等 L3 数据附「采集时间戳 / 有效期」；超期时报告需标注「基于 X 月补录数据，可能已过期」。</li>
+        <li><b>L2 阈值版本管理：</b>大场判定倍数、货盘价格带等阈值携带「行业维度 + 生效时间区间 + 版本号」，避免跨月复盘口径不可比。</li>
+        <li><b>同比硬约束：</b>经营号仅有客户授权后数据 → 环比可直采；<b>同比需 L3 补录去年同期数据</b>。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 四域字段清单 -->
+<section id="fields">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">3</span>四域字段清单（经营号标准化封装）</h2>
+    <p class="sec-desc">对应 PRD 第五点。标注 <span class="tag new">新增</span> 的为本次按抖音复盘维度补入的字段。</p>
+    <div class="legend">
+      图例：<span><span class="tag l1">L1</span> 直采</span><span><span class="tag l2">L2</span> 衍生</span>
+      <span><span class="tag l3">L3</span> 补录</span><span><span class="tag eval">待评估</span> 经营号确认</span>
+      <span><span class="tag new">新增</span> 本次补入</span>
+    </div>
+
+    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 A · 直播间经营数据</h3>
+    <div class="card"><table>
+      <thead><tr><th>字段</th><th style="width:90px">层级</th><th style="width:120px">粒度</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>账号 ID / 名称、场次 ID、开播/结束时间、时长</td><td><span class="tag l1">L1</span></td><td>账号/场次</td><td>与客户主计简称打通</td></tr>
+        <tr><td>场观、峰值在线、UV、GMV、订单数、客单价</td><td><span class="tag l1">L1</span></td><td>场次×日</td><td>经营力北极星指标</td></tr>
+        <tr><td>大场判定标识</td><td><span class="tag l2">L2</span></td><td>场次</td><td>按 GMV 倍数规则计算，阈值参数化</td></tr>
+        <tr class="newrow"><td>场次新客 GMV / 新客占比 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span>/<span class="tag l2">L2</span></td><td>场次×日</td><td>判断直播承担拉新 or 守老客角色</td></tr>
+        <tr class="newrow"><td>直播转化漏斗（观看→互动→点击→下单）<span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>场次</td><td>定位漏斗断点，仅 GMV 无法诊断</td></tr>
+        <tr class="newrow"><td>开播节奏 / 时段分布 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span></td><td>账号×日</td><td>诊断开播常态化规律性</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 B · 商品经营数据</h3>
+    <div class="card"><table>
+      <thead><tr><th>字段</th><th style="width:90px">层级</th><th style="width:120px">粒度</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>SKU ID/名称/类目(一~四级)/价格</td><td><span class="tag l1">L1</span></td><td>SKU</td><td>复用微信小店商品 ID 体系</td></tr>
+        <tr><td>上架状态、库存、动销天数、销量、GMV</td><td><span class="tag l1">L1</span></td><td>SKU×日</td><td>爆品识别基础</td></tr>
+        <tr><td>好评率、退款率</td><td><span class="tag l1">L1</span></td><td>SKU/店铺</td><td>店铺体验诊断</td></tr>
+        <tr><td>货盘结构分类（调性/引流/爆品/利润品）</td><td><span class="tag l2">L2</span></td><td>SKU</td><td>价格带+销量占比规则，阈值下发</td></tr>
+        <tr><td>产品背书信息、产品线映射</td><td><span class="tag l3">L3</span></td><td>SKU</td><td>文本类/自定义口径，补录后 join</td></tr>
+        <tr class="newrow"><td>单品新客 GMV / 单品新客率 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span>/<span class="tag l2">L2</span></td><td>SKU</td><td>区分「哪个 SKU 拉新 / 哪个守老客」</td></tr>
+        <tr class="newrow"><td>类目行业排名 / 行业大盘对标 <span class="tag new">新增</span></td><td><span class="tag l3">L3</span></td><td>类目</td><td>行业对标需竞品补录（对应行业爆品）</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 C · 生意大盘数据</h3>
+    <div class="card"><table>
+      <thead><tr><th>字段</th><th style="width:90px">层级</th><th style="width:120px">粒度</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>总 GMV、订单数、客单价</td><td><span class="tag l1">L1</span></td><td>账号×日</td><td>全局北极星</td></tr>
+        <tr><td>渠道拆分：直播 GMV / 货架 GMV 占比</td><td><span class="tag l1">L1</span></td><td>账号×日</td><td>与域 A/B 可拆分对应</td></tr>
+        <tr><td>环比对比（上周/上月）</td><td><span class="tag l2">L2</span></td><td>账号×周/月</td><td>经营号可直接计算</td></tr>
+        <tr><td>同比对比（去年同期）</td><td><span class="tag l3">L3</span></td><td>账号×月</td><td>受授权时效限制，需补录</td></tr>
+      </tbody>
+    </table></div>
+    <p class="sec-desc" style="margin-top:8px">※ 用户/人群资产（最大缺口）已单独拆为下方 <a href="#user">域 F · 用户资产维度</a>。</p>
+
+    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 D · 投放数据</h3>
+    <div class="card"><table>
+      <thead><tr><th>字段</th><th style="width:90px">层级</th><th style="width:120px">粒度</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>账户 ID、计划 ID、TID 数</td><td><span class="tag l1">L1</span></td><td>账户/计划</td><td>与域 A/B/C 共用账号 ID 体系</td></tr>
+        <tr><td>消耗、曝光、点击、CTR、CVR、CPM、ROI</td><td><span class="tag l1">L1</span></td><td>账户×日</td><td>投放核心指标</td></tr>
+        <tr><td>智投类型、版位分布 / 智投占比、版位集中度</td><td><span class="tag l1">L1</span>/<span class="tag l2">L2</span></td><td>账户×日/周</td><td>判定阈值参数化</td></tr>
+        <tr class="newrow"><td>投放新客成本 / 拉新 ROI <span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>账户×周/月</td><td>区分拉新型 vs 收割型投放</td></tr>
+        <tr class="newrow"><td>计划目标人群 / 定向拆分 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span></td><td>计划</td><td>诊断定向精准度（若 ADQ 支持）</td></tr>
+        <tr class="newrow"><td>微信豆数据（消耗/曝光/互动/转化）<span class="tag new">新增</span></td><td><span class="tag l3">L3</span></td><td>账户×日</td><td>数据源层不含微信豆，须单独补录</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 E · 内容创作者 / 合作达人数据 <span style="font-size:12px;color:#c47a12">★ 核心待评估</span></h3>
+    <div class="card"><table>
+      <thead><tr><th>字段</th><th style="width:90px">层级</th><th style="width:120px">粒度</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>创作者 ID/昵称、账号类型（自有/合作达人）</td><td><span class="tag eval">待评估</span></td><td>创作者</td><td>需确认内容后台可否拉取</td></tr>
+        <tr><td>合作达人清单（KOL/KOC 分层）</td><td><span class="tag eval">待评估</span></td><td>达人</td><td>矩阵目标依赖此数据</td></tr>
+        <tr><td>视频发布数、发布频次</td><td><span class="tag eval">待评估</span></td><td>创作者×日/周</td><td>对应 L1 勤奋度指标</td></tr>
+        <tr><td>播放量、转发量、点赞量</td><td><span class="tag eval">待评估</span></td><td>视频</td><td>对应 L2 种草力指标</td></tr>
+        <tr><td>短视频→直播引流转化率</td><td><span class="tag eval">待评估</span></td><td>创作者×场次</td><td>对应 L3 转化力，与域 A join</td></tr>
+        <tr class="newrow"><td>硬广 vs 原生内容区分标识 <span class="tag new">新增</span></td><td><span class="tag eval">待评估</span></td><td>视频</td><td>对应「硬广指标/原生内容指标」区分</td></tr>
+        <tr class="newrow"><td>内容→商品归因（视频带动 SKU GMV）<span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>视频×SKU</td><td>与域 B join，打通内容力→经营力闭环</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 用户资产维度（新增域） -->
+<section id="user">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">4</span>域 F · 用户 / 人群资产维度 <span class="tag new" style="font-size:13px">整块新增</span></h2>
+    <p class="sec-desc">对照抖音月度复盘的最大缺口。支撑「经营力—谁在买、复购是否健康」与「组织力—用户价值分层」两力诊断，建议独立成域。</p>
+    <div class="card"><table>
+      <thead><tr><th>字段</th><th style="width:100px">层级</th><th style="width:120px">粒度</th><th>说明 / 服务的力</th></tr></thead>
+      <tbody>
+        <tr class="newrow"><td>新客数 / 老客数 / 新客率</td><td><span class="tag l1">L1</span>/<span class="tag l2">L2</span></td><td>账号×日/月</td><td>经营力根基指标</td></tr>
+        <tr class="newrow"><td>复购率 / 复购间隔 / 老客粘性</td><td><span class="tag l2">L2</span></td><td>账号×月</td><td>老客健康度（如 180 日加权复购率）</td></tr>
+        <tr class="newrow"><td>地域分布（TOP 省份支付规模与新客率）</td><td><span class="tag l1">L1</span></td><td>账号×地域</td><td>区域策略与补贴投放诊断</td></tr>
+        <tr class="newrow"><td>人群分层资产（类 5A / 八大人群）</td><td><span class="tag eval">待评估</span></td><td>人群包</td><td>组织力—用户分层；视频号侧能力待评估，拿不到降级 L3</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 输入格式 -->
+<section id="input">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">5</span>输入格式要求</h2>
+    <p class="sec-desc">客户侧（A 类）必须提供 + 我方（B 类）补充获取。新增字段的输入要求已并入下表。</p>
+    <div class="card"><table>
+      <thead><tr><th style="width:170px">数据类型</th><th style="width:110px">推荐格式</th><th>必填字段</th><th>可选字段</th></tr></thead>
+      <tbody>
+        <tr><td>品牌生意数据</td><td>Excel</td><td>日期、GMV、场域类型、占比、<b>新客/老客数</b> <span class="tag new">新</span></td><td>同比、环比、复购率</td></tr>
+        <tr><td>竞媒经营数据</td><td>Excel/截图</td><td>平台、产品线、时间段、GMV</td><td>销量、客单价</td></tr>
+        <tr><td>微信资产清单</td><td>Excel/CSV</td><td>账号类型、账号 ID</td><td>粉丝量、定位</td></tr>
+        <tr><td>直播间/店铺截图</td><td>截图文件夹</td><td>账号名称、截图</td><td>场次、GMV、<b>新客占比</b> <span class="tag new">新</span></td></tr>
+        <tr><td>品牌行业报告</td><td>PDF/文档</td><td>报告核心内容</td><td>数据支撑、案例</td></tr>
+        <tr><td>投放诊断报告</td><td>Excel</td><td>素材量、智投占比、<b>微信豆消耗</b> <span class="tag new">新</span></td><td>版位结构、消耗、拉新 ROI</td></tr>
+        <tr><td>友望/竞品数据</td><td>Excel/截图</td><td>竞品名称、GMV</td><td>创作者数、视频数、行业排名</td></tr>
+        <tr><td><b>用户资产数据</b> <span class="tag new">新</span></td><td>Excel</td><td>新老客、复购、地域分布</td><td>人群分层（5A/八大）</td></tr>
+        <tr><td>方法论素材</td><td>PDF/PPT</td><td>方法论核心观点</td><td>案例、数据</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 输出结构 -->
+<section id="output">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">6</span>输出报告结构</h2>
+    <p class="sec-desc">按「总览 → 五力 → 行动计划」固定章节。新增字段对应的诊断点已并入各力关键输出。</p>
+    <div class="card"><table>
+      <thead><tr><th style="width:130px">章节</th><th>核心内容</th><th>关键输出（含新增）</th></tr></thead>
+      <tbody>
+        <tr><td>00 全局快照</td><td>一句话判势 + 数据速览 + 北极星目标</td><td>大盘 GMV、渠道占比、<b>整体新客率/复购率</b> <span class="tag new">新</span></td></tr>
+        <tr><td>01 商品力</td><td>人货场匹配、爆品定义、货盘金字塔、五张背书牌</td><td>爆品识别、货盘结构、<b>单品拉新/守老客判定</b> <span class="tag new">新</span></td></tr>
+        <tr><td>02 内容力</td><td>四步法 + 三级评估</td><td>L1/L2/L3 三级评估、<b>硬广/原生结构、内容带货归因</b> <span class="tag new">新</span></td></tr>
+        <tr><td>03 经营力</td><td>店铺体验、直播间效率、大场机制</td><td>装修自查、场均 GMV 对比、<b>直播转化漏斗、场域新客率</b> <span class="tag new">新</span></td></tr>
+        <tr><td>04 组织力</td><td>矩阵三定、达人通道、用户价值分层</td><td>分工/达人策略、<b>5A 人群资产、新老客运营方案</b> <span class="tag new">新</span></td></tr>
+        <tr><td>05 投放力</td><td>勤奋度三指标、三阶段优化</td><td>素材量/智投/版位诊断、<b>拉新 ROI、微信豆投放</b> <span class="tag new">新</span></td></tr>
+        <tr><td>06 行动计划</td><td>按「月 + 五力」逐月输出 Todo</td><td>P0/P1/P2 任务清单、H2 累计 GMV 目标</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 优先级 -->
+<section id="priority">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">7</span>新增字段优先级</h2>
+    <p class="sec-desc">对应修订说明的优先级汇总，供数据接入排期参考。</p>
+    <div class="card"><table>
+      <thead><tr><th style="width:90px">优先级</th><th>缺口</th><th style="width:170px">所属</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag p0">P0</span></td><td>用户/人群资产（新老客、复购、地域）</td><td>域 F / 组织力·经营力</td></tr>
+        <tr><td><span class="tag p0">P0</span></td><td>各场域/单品的新客拆分</td><td>域 A / 域 B</td></tr>
+        <tr><td><span class="tag p1">P1</span></td><td>人群资产的 L1/L2/L3 分层归属</td><td>数据分层</td></tr>
+        <tr><td><span class="tag p1">P1</span></td><td>微信豆字段清单落地到域 D</td><td>域 D / 投放力</td></tr>
+        <tr><td><span class="tag p1">P1</span></td><td>内容硬广/原生区分、内容→SKU 归因</td><td>域 E / 内容力</td></tr>
+        <tr><td><span class="tag p2">P2</span></td><td>L2 阈值版本管理 + L3 数据有效期</td><td>数据分层</td></tr>
+        <tr><td><span class="tag p2">P2</span></td><td>字段级数据来源标记（直采/补录/缺失）</td><td>数据分层</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 一键复制 Prompt -->
+<section id="prompt">
+  <div class="wrap">
+    <h2 class="sec"><span class="no">8</span>一键复制 Prompt</h2>
+    <p class="sec-desc">下方为整合了全部新增字段的完整诊断 Prompt，点击右上角复制后即可粘贴给 AI 使用。</p>
+    <div class="promptbox">
+      <button class="copybtn" id="copyBtn" onclick="copyPrompt()">复制 Prompt</button>
+<span id="promptText"># 角色
+你是一名资深的视频号生意诊断专家，精通「生意诊断（4+1）」方法论：经营力 + 商品力 + 内容力 + 投放力 +（组织力）。
+
+# 任务
+基于我提供的数据，对客户做一次高规格的四力诊断，输出面向品牌高层决策的诊断报告。诊断必须具备真实推理能力（货盘金字塔占比异常识别、大场 ROI 归因、内容矩阵差距归因、新老客结构诊断），不得只做数据搬运+模板套字段。
+
+# 数据分层与口径约束
+1. L1 原始（直采）/ L2 衍生（规则计算）/ L3 补录（主观/文本/历史/竞品）。
+2. 每个字段请标注数据来源：direct（直采）/ backfill（补录）/ missing（缺失）；对 missing 字段只做定性描述并显式提示缺失，不得隐藏。
+3. 环比可直接计算；同比需依赖 L3 补录的去年同期数据，若缺失则不做同比。
+4. L3 补录数据若超出有效期，请在结论中标注「基于 X 月补录数据，可能已过期」。
+5. L2 阈值（大场判定倍数、货盘价格带）以我下发的「行业维度+生效区间+版本号」为准，不得写死行业阈值。
+
+# 需分析的数据字段（五域 + 用户资产）
+【域A 直播间】账号/场次、场观/峰值/UV、GMV/订单/客单价、大场判定；
+  新增：场次新客 GMV 与新客占比、直播转化漏斗（观看→互动→点击→下单）、开播节奏/时段分布。
+【域B 商品】SKU/类目/价格、销量/GMV、好评率/退款率、货盘结构分类、背书/产品线；
+  新增：单品新客 GMV 与单品新客率、类目行业排名/行业大盘对标。
+【域C 生意大盘】总 GMV/订单/客单价、渠道拆分（直播/货架占比）、环比、同比(L3)。
+【域D 投放】账户/计划、消耗/曝光/点击/CTR/CVR/CPM/ROI、智投占比/版位集中度；
+  新增：投放新客成本与拉新 ROI、计划目标人群/定向拆分、微信豆数据(L3 补录)。
+【域E 内容创作者/达人】创作者矩阵与账号类型、达人分层(KOL/KOC)、发布数/频次、播放/转发/点赞、短视频→直播引流转化率；
+  新增：硬广 vs 原生内容区分、内容→商品归因（视频带动 SKU GMV）。
+【域F 用户/人群资产】(整块新增) 新客数/老客数/新客率、复购率/复购间隔/老客粘性、地域分布(TOP 省份支付规模与新客率)、人群分层资产(类 5A/八大人群)。
+
+# 诊断框架（按此推理）
+- 经营力：店铺体验(5项装修自查) + 直播间效率(场均GMV对比 + 转化漏斗断点) + 大场机制 + 场域新客率归因。
+- 商品力：人货场匹配 + 爆品定义 + 货盘金字塔占比异常 + 五张背书牌 + 单品拉新/守老客定位。
+- 内容力：四步法(打卖点→匹配背书→怎么用→评估) + L1勤奋度/L2种草力/L3转化力三级评估 + 硬广/原生结构 + 内容带货归因。
+- 投放力：勤奋度三指标(素材量/智投占比/版位结构) + 拉新 vs 收割型投放拆分 + 微信豆投放诊断。
+- 组织力：矩阵三定 + 达人通道 + 用户价值分层 + 5A 人群资产健康度 + 新老客/复购结构。
+
+# 输出结构（固定章节）
+00 全局快照(一句话判势+数据速览+含整体新客率/复购率的北极星目标)
+→ 01 商品力 → 02 内容力 → 03 经营力 → 04 组织力 → 05 投放力
+→ 06 分月行动路线图(7-12月逐月 Todo，标 P0/P1/P2 + H2 累计 GMV 目标)
+→ 目标达成路径总览。
+
+# 要求
+每一力均按「输入数据 → 诊断逻辑 → 输出结论」链路呈现；关键结论给出数据支撑与归因；缺失数据显式标注。现在请基于我随后提供的数据开始诊断。</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    生意诊断（4+1）· Scale Prompt · 视频号版 v1.1 &nbsp;|&nbsp; 已按《四力生意诊断 PRD 第四点第五点修订说明》整合新增字段 &nbsp;|&nbsp; 2026-07-31
+  </div>
+</footer>
+
+<script>
+function copyPrompt(){
+  var t=document.getElementById('promptText').innerText;
+  navigator.clipboard.writeText(t).then(function(){
+    var b=document.getElementById('copyBtn');
+    b.textContent='已复制 ✓';b.classList.add('done');
+    setTimeout(function(){b.textContent='复制 Prompt';b.classList.remove('done');},2000);
+  });
+}
+</script>
 </body>
 </html>
