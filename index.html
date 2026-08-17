@@ -131,11 +131,11 @@
         <div class="fname">经营力</div>
         <div class="fq">怎么卖？</div>
         <ul>
-          <li>店铺体验</li>
-          <li>直播间效率</li>
-          <li>大场机制</li>
-          <li class="plus">＋ 直播转化漏斗 <span class="tag new">新</span></li>
-          <li class="plus">＋ 场域新客率 <span class="tag new">新</span></li>
+          <li class="plus">🅐 商家自营 <span class="tag new">拆</span></li>
+          <li style="padding-left:12px;font-size:13px;color:#555">自播 · 短视频 · 商品卡</li>
+          <li class="plus">🅑 分销（达播）<span class="tag new">拆</span></li>
+          <li style="padding-left:12px;font-size:13px;color:#555">达人带货 · 达人矩阵</li>
+          <li class="plus">＋ 场域拆解/新客率 <span class="tag new">新</span></li>
         </ul>
       </div>
       <div class="force">
@@ -224,16 +224,30 @@
       <span><span class="tag new">新增</span> 本次补入</span>
     </div>
 
-    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 A · 直播间经营数据</h3>
+    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 A · 直播间经营数据（自播 / 达播分场域）</h3>
     <div class="card"><table>
       <thead><tr><th>字段</th><th style="width:90px">层级</th><th style="width:120px">粒度</th><th>说明</th></tr></thead>
       <tbody>
         <tr><td>账号 ID / 名称、场次 ID、开播/结束时间、时长</td><td><span class="tag l1">L1</span></td><td>账号/场次</td><td>与客户主计简称打通</td></tr>
         <tr><td>场观、峰值在线、UV、GMV、订单数、客单价</td><td><span class="tag l1">L1</span></td><td>场次×日</td><td>经营力北极星指标</td></tr>
         <tr><td>大场判定标识</td><td><span class="tag l2">L2</span></td><td>场次</td><td>按 GMV 倍数规则计算，阈值参数化</td></tr>
+        <tr class="newrow"><td>场次类型标识：自播 / 达播（分销）<span class="tag new">新增</span></td><td><span class="tag l1">L1</span></td><td>场次</td><td>经营力分「商家自营 / 分销」两场景诊断的关键拆分</td></tr>
+        <tr class="newrow"><td>GPM（千次观看成交）、转化率、停留时长 <span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>场次</td><td>对标抖音直播场域核心效率指标</td></tr>
         <tr class="newrow"><td>场次新客 GMV / 新客占比 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span>/<span class="tag l2">L2</span></td><td>场次×日</td><td>判断直播承担拉新 or 守老客角色</td></tr>
         <tr class="newrow"><td>直播转化漏斗（观看→互动→点击→下单）<span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>场次</td><td>定位漏斗断点，仅 GMV 无法诊断</td></tr>
         <tr class="newrow"><td>开播节奏 / 时段分布 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span></td><td>账号×日</td><td>诊断开播常态化规律性</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin:22px 0 8px;font-size:16px;color:#1f4e79">域 A+ · 分销 / 达人带货数据 <span class="tag new" style="font-size:12px">新增块</span></h3>
+    <div class="card"><table>
+      <thead><tr><th>字段</th><th style="width:90px">层级</th><th style="width:120px">粒度</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr class="newrow"><td>达播 GMV / 达播占比 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span>/<span class="tag l2">L2</span></td><td>账号×日/月</td><td>分销场景北极星，对标抖音「达人」场域</td></tr>
+        <tr class="newrow"><td>合作达人数 / 达人分层（头部/腰部/KOC）<span class="tag new">新增</span></td><td><span class="tag l1">L1</span>/<span class="tag l3">L3</span></td><td>达人</td><td>达人矩阵结构，判断是否过度依赖单一达人</td></tr>
+        <tr class="newrow"><td>TOP 达人 GMV / 达人集中度 <span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>达人</td><td>分销健康度：集中度过高有断供风险</td></tr>
+        <tr class="newrow"><td>达人拉新效率 / 达人带货 ROI <span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>达人×月</td><td>对标抖音「达人：贡献·拉新效率·ROI」</td></tr>
+        <tr class="newrow"><td>达人专供货盘 / 分销佣金率 <span class="tag new">新增</span></td><td><span class="tag l3">L3</span></td><td>达人×SKU</td><td>分销机制诊断，需补录</td></tr>
       </tbody>
     </table></div>
 
@@ -257,6 +271,8 @@
       <tbody>
         <tr><td>总 GMV、订单数、客单价</td><td><span class="tag l1">L1</span></td><td>账号×日</td><td>全局北极星</td></tr>
         <tr><td>渠道拆分：直播 GMV / 货架 GMV 占比</td><td><span class="tag l1">L1</span></td><td>账号×日</td><td>与域 A/B 可拆分对应</td></tr>
+        <tr class="newrow"><td>场域拆解：自播 / 达播 / 短视频 / 商品卡 GMV 占比 <span class="tag new">新增</span></td><td><span class="tag l1">L1</span>/<span class="tag l2">L2</span></td><td>账号×日/月</td><td>对标抖音四大流量场域，支撑经营力「自营 vs 分销」拆分</td></tr>
+        <tr class="newrow"><td>自营 GMV（自播+短视频+商品卡）vs 分销 GMV（达播）占比 <span class="tag new">新增</span></td><td><span class="tag l2">L2</span></td><td>账号×月</td><td>经营力双场景总览的核心口径</td></tr>
         <tr><td>环比对比（上周/上月）</td><td><span class="tag l2">L2</span></td><td>账号×周/月</td><td>经营号可直接计算</td></tr>
         <tr><td>同比对比（去年同期）</td><td><span class="tag l3">L3</span></td><td>账号×月</td><td>受授权时效限制，需补录</td></tr>
       </tbody>
@@ -342,7 +358,7 @@
         <tr><td>00 全局快照</td><td>一句话判势 + 数据速览 + 北极星目标</td><td>大盘 GMV、渠道占比、<b>整体新客率/复购率</b> <span class="tag new">新</span></td></tr>
         <tr><td>01 商品力</td><td>人货场匹配、爆品定义、货盘金字塔、五张背书牌</td><td>爆品识别、货盘结构、<b>单品拉新/守老客判定</b> <span class="tag new">新</span></td></tr>
         <tr><td>02 内容力</td><td>四步法 + 三级评估</td><td>L1/L2/L3 三级评估、<b>硬广/原生结构、内容带货归因</b> <span class="tag new">新</span></td></tr>
-        <tr><td>03 经营力</td><td>店铺体验、直播间效率、大场机制</td><td>装修自查、场均 GMV 对比、<b>直播转化漏斗、场域新客率</b> <span class="tag new">新</span></td></tr>
+        <tr><td>03 经营力<br><span style="font-size:12px;color:#888">（自营+分销）</span></td><td><b>🅐 商家自营</b>：店铺体验、自播直播间效率、短视频引流、商品卡/货架、大场机制<br><b>🅑 分销</b>：达播贡献、达人矩阵结构、达人 ROI</td><td>装修自查、场均 GMV/GPM 对比、直播转化漏斗、<b>自营 vs 分销场域拆解、达人集中度、场域新客率</b> <span class="tag new">新</span></td></tr>
         <tr><td>04 组织力</td><td>矩阵三定、达人通道、用户价值分层</td><td>分工/达人策略、<b>5A 人群资产、新老客运营方案</b> <span class="tag new">新</span></td></tr>
         <tr><td>05 投放力</td><td>勤奋度三指标、三阶段优化</td><td>素材量/智投/版位诊断、<b>拉新 ROI、微信豆投放</b> <span class="tag new">新</span></td></tr>
         <tr><td>06 行动计划</td><td>按「月 + 五力」逐月输出 Todo</td><td>P0/P1/P2 任务清单、H2 累计 GMV 目标</td></tr>
@@ -393,10 +409,11 @@
 
 # 需分析的数据字段（五域 + 用户资产）
 【域A 直播间】账号/场次、场观/峰值/UV、GMV/订单/客单价、大场判定；
-  新增：场次新客 GMV 与新客占比、直播转化漏斗（观看→互动→点击→下单）、开播节奏/时段分布。
+  新增：场次类型(自播/达播)、GPM/转化率/停留时长、场次新客 GMV 与新客占比、直播转化漏斗（观看→互动→点击→下单）、开播节奏/时段分布。
+【域A+ 分销/达人带货】(新增) 达播 GMV/达播占比、合作达人数/达人分层(头部/腰部/KOC)、TOP 达人 GMV/达人集中度、达人拉新效率/达人带货 ROI、达人专供货盘/分销佣金率(L3)。
 【域B 商品】SKU/类目/价格、销量/GMV、好评率/退款率、货盘结构分类、背书/产品线；
   新增：单品新客 GMV 与单品新客率、类目行业排名/行业大盘对标。
-【域C 生意大盘】总 GMV/订单/客单价、渠道拆分（直播/货架占比）、环比、同比(L3)。
+【域C 生意大盘】总 GMV/订单/客单价、渠道拆分（直播/货架占比）、场域拆解(自播/达播/短视频/商品卡占比)、自营 vs 分销 GMV 占比、环比、同比(L3)。
 【域D 投放】账户/计划、消耗/曝光/点击/CTR/CVR/CPM/ROI、智投占比/版位集中度；
   新增：投放新客成本与拉新 ROI、计划目标人群/定向拆分、微信豆数据(L3 补录)。
 【域E 内容创作者/达人】创作者矩阵与账号类型、达人分层(KOL/KOC)、发布数/频次、播放/转发/点赞、短视频→直播引流转化率；
@@ -404,7 +421,9 @@
 【域F 用户/人群资产】(整块新增) 新客数/老客数/新客率、复购率/复购间隔/老客粘性、地域分布(TOP 省份支付规模与新客率)、人群分层资产(类 5A/八大人群)。
 
 # 诊断框架（按此推理）
-- 经营力：店铺体验(5项装修自查) + 直播间效率(场均GMV对比 + 转化漏斗断点) + 大场机制 + 场域新客率归因。
+- 经营力（分两个场景诊断）：
+  · 🅐 商家自营：店铺体验(5项装修自查) + 自播直播间效率(场均GMV/GPM对比 + 转化漏斗断点) + 短视频引流效率 + 商品卡/货架(搜索卡位/商城) + 大场机制 + 自营场域新客率归因。
+  · 🅑 分销(达播)：达播 GMV/占比 + 达人矩阵结构(头部/腰部/KOC 分层与集中度) + 达人拉新效率/带货 ROI + 达人专供货盘。先判断自营 vs 分销的健康比例，再分别定位各自短板。
 - 商品力：人货场匹配 + 爆品定义 + 货盘金字塔占比异常 + 五张背书牌 + 单品拉新/守老客定位。
 - 内容力：四步法(打卖点→匹配背书→怎么用→评估) + L1勤奋度/L2种草力/L3转化力三级评估 + 硬广/原生结构 + 内容带货归因。
 - 投放力：勤奋度三指标(素材量/智投占比/版位结构) + 拉新 vs 收割型投放拆分 + 微信豆投放诊断。
@@ -412,7 +431,7 @@
 
 # 输出结构（固定章节）
 00 全局快照(一句话判势+数据速览+含整体新客率/复购率的北极星目标)
-→ 01 商品力 → 02 内容力 → 03 经营力 → 04 组织力 → 05 投放力
+→ 01 商品力 → 02 内容力 → 03 经营力(🅐商家自营 + 🅑分销 两场景分别诊断) → 04 组织力 → 05 投放力
 → 06 分月行动路线图(7-12月逐月 Todo，标 P0/P1/P2 + H2 累计 GMV 目标)
 → 目标达成路径总览。
 
@@ -424,7 +443,7 @@
 
 <footer>
   <div class="wrap">
-    生意诊断（4+1）· Scale Prompt · 视频号版 v1.1 &nbsp;|&nbsp; 已按《四力生意诊断 PRD 第四点第五点修订说明》整合新增字段 &nbsp;|&nbsp; 2026-07-31
+    生意诊断（4+1）· Scale Prompt · 视频号版 v1.2 &nbsp;|&nbsp; 经营力已拆分「商家自营 / 分销」双场景，对标抖音月度复盘四大流量场域 &nbsp;|&nbsp; 2026-08-18
   </div>
 </footer>
 
